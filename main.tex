@@ -1,5 +1,7 @@
 % Template for a Computer Science Tripos Part II project dissertation
 \documentclass[12pt,a4paper,twoside,openright]{report}
+
+\usepackage[indent=0pt,skip=10pt]{parskip}
 \usepackage[pdfborder={0 0 0}]{hyperref}    % turns references into hyperlinks
 \usepackage[margin=25mm]{geometry}  % adjusts page layout
 \usepackage{graphicx}  % allows inclusion of PDF, PNG and JPG images
@@ -73,7 +75,7 @@ Supervisor:         & \bf \msupervisor                  \\
 \end{tabular}
 }
 \footnotetext[1]{This word count was computed
-by \texttt{detex diss.tex | tr -cd '0-9A-Za-z $\tt\backslash$n' | wc -w}
+by 
 }
 \stepcounter{footnote}
 
@@ -81,29 +83,16 @@ by \texttt{detex diss.tex | tr -cd '0-9A-Za-z $\tt\backslash$n' | wc -w}
 \section*{Original Aims of the Project}
 % At most 100 words
 
-To write a demonstration dissertation\footnote{A normal footnote without the
-complication of being in a table.} using \LaTeX\ to save
-student's time when writing their own dissertations. The dissertation
-should illustrate how to use the more common \LaTeX\ constructs. It
-should include pictures and diagrams to show how these can be
-incorporated into the dissertation.  It should contain the entire
-\LaTeX\ source of the dissertation and the makefile.  It should
-explain how to construct an MSDOS disk of the dissertation in
-Postscript format that can be used by the book shop for printing, and,
-finally, it should have the prescribed layout and format of a diploma
-dissertation.
+
 
 
 \section*{Work Completed}
 % At most 100 words
 
-All that has been completed appears in this dissertation.
 
 \section*{Special Difficulties}
 % At most 100 words
 
-Learning how to incorporate encapulated postscript into a \LaTeX\
-document on both Ubuntu Linux and OS X.
 
 \newpage
 
@@ -114,9 +103,6 @@ document on both Ubuntu Linux and OS X.
 \newpage
 \section*{Acknowledgements}
 
-This document owes much to an earlier version written by Simon Moore
-\cite{Moore95}.  His help, encouragement and advice was greatly 
-appreciated.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % now for the chapters
@@ -124,269 +110,53 @@ appreciated.
 \pagestyle{headings}
 
 \chapter{Introduction}
+\textit{
+Since the development of electronic devices, people have utilised them extensively in the creation of art, especially music. From the theremin to synthesizers to trackers and modern day Digital Audio Workstations (hereafter referred to as DAWs), electronics have enabled people to compose music easier than ever before, and to achieve previously unachievable sounds.
+}
 
-\section{Overview of the files}
+This dissertation explores the full capability of modern computers to facilitate a particular style of artistic audio composition. It presents a novel piece of software (tuPAC) that aims to achieve this goal through a graphical user interface, which has been evaluated against an industry-standard audio composition tool (elaborate on results). The project focuses on catering to a style of musical composition focused on the usage of vocal sounds in unconventional ways, often using layering, repetition and nonsensical utterances to portray a feeling or artistic idea. The research and development was done with guidance from an artist who is interested in this style of composition.
 
-This document consists of the following files:
+\section{Motivation}
+In Western classical music, a motet is a style of polyphonic vocal composition, generally without instrumental accompaniment. Polyphonic compositions consist of multiple voices with different melodies. Isorhythmic motets are particularly related to this project as they are characterised by the repetition and augmentation of sections of the composition. [citation needed] 
 
-\begin{itemize}
-\item \texttt{makefile} --- The makefile for the dissertation and
-                         Project Proposal
-\item \texttt{main.tex} --- The dissertation
-\item \texttt{proposal.tex}  --- The project proposal 
-\item \texttt{figs} -- A directory containing diagrams and pictures
-\item \texttt{refs.bib} --- The bibliography database
-\end{itemize}
+Many contemporary artists have experimented with vocal sounds for the creation of texture in music. Steve Reich is a prominent composer most well known for his work creating minimalist music. Much of his work uses voices not to communicate a message through the words, but in order to create a texture. One example is his composition Proverb \cite{ReichProverb}, which has 3 singers repeating parts of a text at different times, layered over each other.
 
-\section{Building the document}
+\section{Background}
+ Modern digital music production is primarily done with DAWs. Popular DAWs like Ableton, FL Studio and Logic Pro are used almost universally in the composition of modern music, and such are a go-to for artists looking to create music through digital means. 
 
-This document was produced using \LaTeXe which is based upon
-\LaTeX\cite{Lamport86}.  To build the document you first need to
-generate \texttt{diss.aux} which, amongst other things, contains the
-references used.  This if done by executing the command:
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/ableton example.png}
+    \caption{UI of Ableton Live}
+    \label{fig:ableton}
+\end{figure}
 
-\texttt{pdflatex main}
+However, the design of these programs doesn't lend itself to all forms of composition equally, and whilst they work well in general, there certainly is different approaches to software design that would better cater to the needs, in terms of functionality and ease of use, of specific use cases.
 
-\noindent
-Then the bibliography can be generated from \texttt{refs.bib} using:
+Another approach to digital audio composition is live coding. This is a technique used to generate art in real time using software - specifically with programming languages. For music, a popular example is Sonic Pi.
 
-\texttt{bibtex main}
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{images/sonicpi.png}
+    \caption{UI of Sonic Pi}
+    \label{fig:sonic_pi}
+\end{figure}
 
-\noindent
-Finally, to ensure all the page numbering is correct run \texttt{pdflatex}
-on \texttt{diss.tex} until the \texttt{.aux} files do not change.  This
-usually takes 2 more runs.
+Live coding software allows users to generate audio through writing programs, with the defining feature being the ability to modify the code whilst the audio is running and seamlessly change the audio as it is played. This approach to making music is vastly different from industry-standard DAWs, and is often used for performance art.
 
-\subsection{The makefile}
+Live coding platforms differ from DAWs in that there is generally less complex functionality, with more focus on simpler but easier manipulation, particularly the repetition and augmentation of sounds previously defined. This makes the process of live coding plausible in real time whilst still sounding good. This approach is much closer to the goal of this project, and so was a primary focus of research and preparation.
 
-To simplify the calls to \texttt{pdflatex} and \texttt{bibtex}, 
-a makefile has been provided, see Appendix~\ref{makefile}. 
-It provides the following facilities:
-
-\begin{description}
-
-\item\texttt{make} \\
- Display help information.
-
-\item\texttt{make proposal.pdf} \\
- Format the proposal document as a PDF.
-
-\item\texttt{make view-proposal} \\
- Run \texttt{make proposal.pdf} and then display it with a Linux PDF viewer
- (preferably ``okular'', if that is not available fall back to ``evince'').
-
-\item\texttt{make main.pdf} \\
- Format the dissertation document as a PDF.
-
-\item\texttt{make count} \\
-Display an estimate of the word count.
-
-\item\texttt{make all} \\
-Construct \texttt{proposal.pdf} and \texttt{diss.pdf}.
-
-\item\texttt{make pub} \\ Make \texttt{diss.pdf}
-and place it in my \texttt{public\_html} directory.
-
-\item\texttt{make clean} \\ Delete all intermediate files except the
-source files and the resulting PDFs. All these deleted files can
-be reconstructed by typing \texttt{make all}.
-
-\end{description}
-
-
-\section{Counting words}
-
-An approximate word count of the body of the dissertation may be
-obtained using:
-
-\texttt{wc main.tex}
-
-\noindent
-Alternatively, try something like:
-
-\verb/detex main.tex | tr -cd '0-9A-Z a-z\n' | wc -w/
+\section{Project Aims}
+The artist involved with this project had previously endeavoured to digitally compose vocal music along the same lines of the previously mentioned compositions in a DAW, but had found the software overwhelming and difficult to work with. This project aimed to design a system specifically for this type of composition from scratch. To design a system which accurately represented the structure of this type of composition, and allow the composer to manipulate the system in an intuitive way, unrestricted by the design of the system.
 
 
 \chapter{Preparation}
 
-This chapter is empty!
-
-
 \chapter{Implementation}
-
-\section{Verbatim text}
-
-Verbatim text can be included using \verb|\begin{verbatim}| and
-\verb|\end{verbatim}|. I normally use a slightly smaller font and
-often squeeze the lines a little closer together, as in:
-
-{\renewcommand{\baselinestretch}{0.8}\small
-\begin{verbatim}
-GET "libhdr"
- 
-GLOBAL { count:200; all  }
- 
-LET try(ld, row, rd) BE TEST row=all
-                        THEN count := count + 1
-                        ELSE { LET poss = all & ~(ld | row | rd)
-                               UNTIL poss=0 DO
-                               { LET p = poss & -poss
-                                 poss := poss - p
-                                 try(ld+p << 1, row+p, rd+p >> 1)
-                               }
-                             }
-LET start() = VALOF
-{ all := 1
-  FOR i = 1 TO 12 DO
-  { count := 0
-    try(0, 0, 0)
-    writef("Number of solutions to %i2-queens is %i5*n", i, count)
-    all := 2*all + 1
-  }
-  RESULTIS 0
-}
-\end{verbatim}
-}
-
-\section{Tables}
-
-\begin{samepage}
-Here is a simple example\footnote{A footnote} of a table.
-
-\begin{center}
-\begin{tabular}{l|c|r}
-Left      & Centred & Right \\
-Justified &         & Justified \\[3mm]
-%\hline\\%[-2mm]
-First     & A       & XXX \\
-Second    & AA      & XX  \\
-Last      & AAA     & X   \\
-\end{tabular}
-\end{center}
-
-\noindent
-There is another example table in the proforma.
-\end{samepage}
-
-\section{Simple diagrams}
-
-Simple diagrams can be written directly in \LaTeX.  For example, see
-figure~\ref{latexpic1} on page~\pageref{latexpic1} and see
-figure~\ref{latexpic2} on page~\pageref{latexpic2}.
-
-\begin{figure}
-\setlength{\unitlength}{1mm}
-\begin{center}
-\begin{picture}(125,100)
-\put(0,80){\framebox(50,10){AAA}}
-\put(0,60){\framebox(50,10){BBB}}
-\put(0,40){\framebox(50,10){CCC}}
-\put(0,20){\framebox(50,10){DDD}}
-\put(0,00){\framebox(50,10){EEE}}
-
-\put(75,80){\framebox(50,10){XXX}}
-\put(75,60){\framebox(50,10){YYY}}
-\put(75,40){\framebox(50,10){ZZZ}}
-
-\put(25,80){\vector(0,-1){10}}
-\put(25,60){\vector(0,-1){10}}
-\put(25,50){\vector(0,1){10}}
-\put(25,40){\vector(0,-1){10}}
-\put(25,20){\vector(0,-1){10}}
-
-\put(100,80){\vector(0,-1){10}}
-\put(100,70){\vector(0,1){10}}
-\put(100,60){\vector(0,-1){10}}
-\put(100,50){\vector(0,1){10}}
-
-\put(50,65){\vector(1,0){25}}
-\put(75,65){\vector(-1,0){25}}
-\end{picture}
-\end{center}
-\caption{A picture composed of boxes and vectors.}
-\label{latexpic1}
-\end{figure}
-
-\begin{figure}
-\setlength{\unitlength}{1mm}
-\begin{center}
-
-\begin{picture}(100,70)
-\put(47,65){\circle{10}}
-\put(45,64){abc}
-
-\put(37,45){\circle{10}}
-\put(37,51){\line(1,1){7}}
-\put(35,44){def}
-
-\put(57,25){\circle{10}}
-\put(57,31){\line(-1,3){9}}
-\put(57,31){\line(-3,2){15}}
-\put(55,24){ghi}
-
-\put(32,0){\framebox(10,10){A}}
-\put(52,0){\framebox(10,10){B}}
-\put(37,12){\line(0,1){26}}
-\put(37,12){\line(2,1){15}}
-\put(57,12){\line(0,2){6}}
-\end{picture}
-
-\end{center}
-\caption{A diagram composed of circles, lines and boxes.}
-\label{latexpic2}
-\end{figure}
-
-
-
-\section{Adding more complicated graphics}
-
-The use of \LaTeX\ format can be tedious and it is often better to use
-encapsulated postscript (EPS) or PDF to represent complicated graphics.
-Figure~\ref{epsfig} and~\ref{xfig} on page \pageref{xfig} are
-examples. The second figure was drawn using \texttt{xfig} and exported in
-{\tt.eps} format. This is my recommended way of drawing all diagrams.
-
-
-\begin{figure}[tbh]
-\centerline{\includegraphics{figs/cuarms.pdf}}
-\caption{Example figure using encapsulated postscript}
-\label{epsfig}
-\end{figure}
-
-\begin{figure}[tbh]
-\vspace{4in}
-\caption{Example figure where a picture can be pasted in}
-\label{pastedfig}
-\end{figure}
-
-
-\begin{figure}[tbh]
-\centerline{\includegraphics{figs/diagram.pdf}}
-\caption{Example diagram drawn using \texttt{xfig}}
-\label{xfig}
-\end{figure}
-
 
 \chapter{Evaluation}
 
-\section{Printing and binding}
-
-Use a ``duplex'' laser printer that can print on both sides to print
-two copies of your dissertation. Then bind them, for example using the
-comb binder in the Computer Laboratory Library.
-
-\section{Further information}
-
-See the Unix Tools notes at
-
-\url{http://www.cl.cam.ac.uk/teaching/current-1/UnixTools/materials.html}
-
-
 \chapter{Conclusions}
-
-I hope that this rough guide to writing a dissertation is \LaTeX\ has
-been helpful and saved you time.
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % the bibliography
