@@ -13,6 +13,9 @@
 \usepackage{url}
 \usepackage{blindtext}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{qtree}
+\usepackage{tipa}
+\usepackage{dirtree}
 
 %\raggedbottom                           % try to avoid widows and orphans
 \sloppy
@@ -121,7 +124,7 @@ by
 % now for the chapters
 
 \pagestyle{headings}
-%TC:endignore
+
 \chapter{Introduction}
 \textit{
 Since the development of electronic devices, people have utilised them extensively in the creation of art, especially music. From the theremin to synthesizers to trackers and modern day Digital Audio Workstations (hereafter referred to as DAWs), electronics have enabled people to compose music easier than ever before, and to achieve previously unachievable sounds.
@@ -132,12 +135,14 @@ This dissertation explores the full capability of modern computers to facilitate
  The research and development in this project was done with guidance from an artist who is interested in composing music with only vocal sounds, experimenting with the structure of spoken language and the sounds made when speaking in order to create art. For the rest of the dissertation, this will be referred to as phonological composition, as it focuses on the manipulation of the structure of language to create an effect, rather than traditional melodic or rhythmic patterns, although these features may also be incorporated into the music. Note that this is not an established term but one that I am using as it best describes the type of composition that the project caters to, but there exists a history of composition styles which fall under this category throughout Western classical and contemporary music.
 
 \section{Artistic Background}
+It is useful to see some historical styles of composition which utilise phonological materials, in order to see the form that these compositions might take. This allows us to build an idea of what structural features may be present in a phonological composition and what artists may want to achieve.
+
 The isorhythmic motet is a particular style of polyphonic vocal composition which first appeared in 13th century French music \cite{Bent01}, notably used in the work of Machaut. Polyphonic vocal compositions consist of multiple voices singing different melodies. The defining feature of isorhythmic motets is the repetition and augmentation of rhythmic and melodic patterns - referred to in literature as \textit{color} and \textit{talea} - performed as layered vocals. This style is an early example of music which uses structures which are the focus of this dissertation: layering, repetition and augmentation in vocal compositions.
 
 Steve Reich is a prominent contemporary composer most well known for his work in composing minimalist music. His composition Proverb contains 6 voices which recite a short piece of text from Ludwig Wittgenstein \cite{ReichProverb}. It draws from the medieval polyphonic compositions in style, and repeats and augments the quote throughout the piece. Reich splits up a sentence into smaller parts and repeats these parts individually. In another contemporary composition, O King by Luciano Berio, individual syllables of Martin Luther King's name are pronounced and repeated by a voice throughout the piece. In both of these contemporary compositions, the structure of spoken language is broken down and manipulated by the artist.
 
 \section{Motivation}
- The most popular metod of modern digital music production ish certainly the DAW. Popular DAWs like Ableton, FL Studio and Logic Pro are used almost universally in the composition of modern music, and such are a go-to for artists looking to create music through digital means.
+ The most popular method of modern digital music production is certainly the DAW. Popular DAWs like Ableton, FL Studio and Logic Pro are used almost universally in the composition of modern music, and such are a go-to for artists looking to create music through digital means.
 
  However, as we will see in the preparation chapter, the design of these programs doesn't lend itself to all forms of composition equally, and whilst they work well in general, there certainly is different approaches to software design that would better cater to the needs, in terms of ease of use and efficiency, of specific use cases.
 
@@ -171,10 +176,13 @@ In the project proposal, four success criteria were set out for this project. He
          \hline
          Play audio & \vital & \easy \\
          Represent model & \vital & \medium \\
+         Apply effects to audio & \medium & \easy \\
          Mapping IPA characters to samples & \medium & \easy \\
+         Render sounds as spectrogram & \low & \veryhard \\
          \hline
          \multicolumn{3}{|c|}{Graphical tool capabilites} \\
          \hline
+         Build responsive GUI & \vital & \medium \\
          Play audio loaded from file & \vital & \medium \\
          Represent model & \high & \hard \\
          Ensure time keeping of audio & \high & \hard \\
@@ -194,6 +202,8 @@ Whilst the above tasks are necessary for the project's success, the true success
 \end{itemize}
 
 \section{Existing Tools}
+Studying existing designs of similar software provides reference for what people will generally expect from audio production software, as well as highlighting areas where traditional designs fail in facilitating unconventional styles of composition.
+
 \subsection{Digital Audio Workstations}
 In this dissertation, I will primarily focus on Ableton Live when discussing DAWs, as it is the one I personally have the most experience with and it is commonly used in electronic music production. It is also the DAW used for evaluation against my project.
 
@@ -206,19 +216,21 @@ In this dissertation, I will primarily focus on Ableton Live when discussing DAW
 
 Ableton Live's main interface consists of ``tracks" which can contain either sound clips or MIDI sequences which define the pitches and timing of notes to be digitally generated. The horizontal axis represents time, starting from the left and moving to the right, and the vertical axis generally represents different instruments (separate trakcs), and sometimes pitch. Effects can be added to and parameters adjusted on individual tracks or groups of tracks. 
 
-This structure and design, typical for DAWs, works with an intuition that lines up with traditional composition - each track corresponds to an instrument which can be fed through different effects. Visually, this approach resembles modern staff notation (Figure 2.2), where the horizontal axis represents time, vertical axis represents pitch, and different instruments or parts are placed on separate staffs (collections of 5 horizontal lines).
+This structure and design, typical for DAWs, works with an intuition that lines up with traditional composition - each track corresponds to an instrument which can be fed through different effects. Visually, this approach resembles modern staff notation (see Figure \ref{fig:staff_not}), where the horizontal axis represents time, vertical axis represents pitch, and different instruments or parts are placed on separate staffs (collections of 5 horizontal lines).
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.7]{images/modern staff notation.png}
     \caption{Example of modern staff notation}
-    \label{fig:my_label}
+    \label{fig:staff_not}
 \end{figure}
 
 This representation of audio is clearly established and will have been encountered by almost all musicians. This is important as users will expect certain features implicitly from all designs, such as the horizontal axis representing the passing of time from left to right.
 
+Whilst this typical representation has been refined for centuries and proven to be efficient for expressing the intentions of Western classical composers, particularly when composing for standard ensembles of instruments like orchestras, there is many styles that don't fit as well into this notation. This can be observed in the notation for Joshua Alvarez Mastel's composition ``animal"\footnote{\url{https://joshuamastel.com/animal/}}, which has an extremely complex, difficult to understand score. This piece was given as an example by the artist involved with this project as an exemplar phonological composition.
+
 \subsection{Live Coding}
-An existing alternative digital composition style is live coding, a technique used to generate art in real time using a programming language. For music, a popular example is Sonic Pi.
+An extisting alternative to DAWs for digital composition is live coding, a technique used to generate art in real time using a programming language. For music, a popular example is Sonic Pi.
 
 \begin{figure}[h]
     \centering
@@ -231,6 +243,8 @@ Live coding software allows users to generate audio through writing programs, wi
 
 Live coding platforms differ from DAWs in that there is generally less complex functionality, with more focus on simpler but easier manipulation, particularly the repetition and augmentation of sounds previously defined. This makes the process of live coding plausible in real time whilst still sounding good. This approach is much closer to the goal of this project, and so was a primary focus of research and preparation.
 
+The design of live coding platforms is highly related to this project, as the code focuses on designing sounds and loops of sounds which are played back live, and augmented as they play. However, live coding platforms, being text-based, have no graphical interface, and so are inaccessible to artists who are less tech-savvy and also provide no visual notation for the music being composed.
+
 \section{Sonic Pi and Strudel}
 In preparation for the development of the project, I researched two live coding platforms in order to build my text tool using the framework of one of them.
 
@@ -240,51 +254,177 @@ Strudel is a web-based live coding platform built in Javascript, based on anothe
 
 I decided to continue my research using the Sonic Pi platform, as Strudel is too incomplete in its current form to work with and could cause additional difficulties down the line.
 
+\section{Speech synthesis}
+Whilst preparing for the project, it was unclear exactly what the functionality of the tool would include. An obvious idea was to include a way of generating phonological sounds digitally, to allow the user to utilise and manipulate speech sounds without recording and re-recording themselves speaking. However, digital speech synthesis is an extremely difficult task and was largely ruled to be out of scope for this project. It is possible to generate very basic vowel sounds without too much difficulty, but producing parameters which are able to be manipulated in a way that makes sense intuitively is almost impossible. I experimented with vowel synthesis during the implementation of the text tool, but decided not to spend too much time on it and focused on sample-based composition for the rest of the implementation.
+
 \section{Software Engineering}
+In preparation for the implementation of this project, research was conducted to decide the specific tools and techniques that would be used. It was necessary to find what approach would allow for the project to be implemented fully, but not require excess development time. Some of that research, and the final decisions for implementation, is outlined here.
+
 \subsection{Framework}
 As mentioned, Sonic Pi was used to develop the text tool as it provided the necessary features for its demonstrative purposes.
 
-Electron was chosen as the framework for the graphical tool. Electron builds web pages written in HTML, CSS and Javascript as desktop applications using Chromium and Node.js. Naturally, npm was used as the package manager as is default with Node.js software. 
+For the graphical interface, I needed a platform that was as powerful as possible to support my development, but malleable enough to accurately represent the design of the tool. I also needed something that would be capable of generating the audio well, through a powerful library or easily connecting to other software.
+
+Qt is a C++ framework of libraries which facilitates the development of powerful desktop applications, with a powerful GUI library. It was used to build Ableton, Sibelius and MuseScore, which are three of the most popular musical composition tools on the market. However, this complexity would make it too cumbersome to work with for the scope of this project.
+
+Electron is a Javascript framework which builds desktop applications using Chromium, rendering a web-page in a native window. This makes it relatively easy to use and inherently cross-platform, although that isn't of much importance for this project. It uses Node.js for Javascript. Node.js is convenient and enables the use of essentially any Javascript library, through the npm package manager.
+
+After researching various options, I decided to work with Electron for its ease of use considering the limited development time of this project.
+
+\subsection{Libraries}
+\subsubsection{Audio}
+I considered using SuperCollider directly with my project, but eventually decided not to. SuperCollider is extremely powerful, but could have cause a lot of implementation issues due to its complexity. There is a library available for Javascript named supercollider.js, but even with this library, the complexity of SuperCollider would be a considerable difficulty in the implementation of my tool, and the added functionality and modularity over simpler audio libraries is not necessary for my project.
+
+Tone.js is a Web Audio framework which supplies an API for audio applications written in Javascript. It supplies reliable event scheduling, audio playback from files and a system for linking effects and sounds together, and through to output. The features supplied by this library are sufficient for this project, and should be easy to implement, so was chosen for the time-keeping and audio playback of the graphical tool. It is also used in Strudel as one of the main options for audio generation. Based on the ease of implementation, and established widespread usage, this library was chosen for my project.
+
+\subsubsection{Visual Interface}
+p5.js is a Javascript library which provides basic graphical capabilites, with a co-ordinate system. It is easy to use, and doesn't have a lot of overhead, which allows for the developer to have full control over what is rendered in the application. Because of its fluidity, it was chosen as the library for this project.
 
 \subsection{Programming Languages}
 The text tool was written in the Sonic Pi GUI, in Sonic Pi's own language, which is essentially Ruby.
 
 After research into both Javascript and Typescript, it was decided to write the project in Typescript, which is an extension of the Javascript language which allows static type checking, and transpiles into Javascript code. It also adds a few features that make object oriented programming easier, which was deemed valuable to the project.
 
-\subsection{Libraries}
-\subsubsection{Audio}
-I considered using SuperCollider directly with my project, but eventually decided not to use it. SuperCollider is extremely powerful, but could cause a lot of implementation issues due to its complexity. There is a library available for Javascript named supercollider.js, but even with this library, the complexity of SuperCollider would be a considerable difficulty in the implementation of my tool, and the added functionality and modularity over simpler audio libraries is not necessary for my project.
-
-Tone.js is a Web Audio framework which supplies an API for audio applications written in Javascript. It supplies reliable event scheduling, audio playback from files and a system for linking effects and sounds together, and through to output. The features supplied by this library are sufficient for this project, and should be easy to implement, so was chosen for the time-keeping and audio playback of the graphical tool. It is also used in Strudel as one of the main options for audio generation. Based on the ease of implementation, and established widespread usage, this library was chosen for my project.
-
-\subsubsection{Visual Interface}
-For the graphical interface, I needed a platform that was as powerful as possible to support my development, but malleable enough to accurately represent the design of the tool.
-
-
 \subsection{Development Methodology}
+It is important to approach software development with a solid plan and logical steps from beginning to conclusion. Due to the experimental nature of this project, it was impossible to know exactly how the implementation would go from start to finish, and so it took part in two stages. 
+
+The first stage would consist of the development of the text-based tool and the computational model of composition. This stage used iterative development, taking advantage of the ease of implementation of features in Sonic Pi to supply the artist involved with regular updates, getting feedback on what is useful for the artist and what isn't as necessary and wouldn't be a priority in the graphical tool. This would refine the idea of what is crucial to the structure of phonological composition being represented in a graphical interface.
+
+The second stage would consist of the development of the graphical tool, which suits the waterfall development methodology. At this stage, the graphical tool would be fully planned out and designed, and so the development could be broken down into the implementation of individual features, with essential prerequisites like playback of audio being fully implemented before features that need others to be implemented, like audio effects.
 
 \section{Starting Point}
+Here, I declare the previous knowledge and skills that I did and didn't have prior to the implementation of the project.
+
+In Part IB, I took the Formal Models of Language course, and it Part II, I took the Natural Language Processing unit of assessment. These courses provided me with insight into the structure of language which is discussed in the implementation and was relevant to the development of the project.
+
 \subsection{Text tool}
 The text tool was built in Sonic Pi's own language, which handles everything from audio generation to time keeping. As the text tool was only for demonstration to the user and exploration of possible useful features, this was sufficient. I have only briefly used Sonic Pi prior to this project and was required to learn its native language, which is based on the programming language Ruby, which I have also never used before.
 
 \subsection{Graphical tool}
 The graphical tool for the project was built using Electron and Node.js, and written in Typescript. The sound was generated using the Tone.js library, which has a reliable time-keeping system. I have never used Javascript, Typescript, Electron, Node.js or Tone.js in any previous work. The graphical interface was rendered using p5.js which is able to render text, shapes and lines onto a HTML canvas. I have previously used the Python version of p5.js, Processing, which is very similar to the Javascript library.
 
-
+%TC:endignore
 \chapter{Implementation}
-\section{Computational Model of Composition}
+This chapter outlines how both the text-based tool and the final graphical tool were designed and implemented.
 
 \section{Text-based tool}
+As described in the preparation, it was decided that Sonic Pi had all audio functionality necessary to experiment with possible features that would benefit phonological composition, and to get feedback from the artist.
+\subsection{Phonological composition structure}
+\textit{Note: here I am primarily talking about English, as it is the only language I know. Much of the analysis applies directly to other languages, but certain concepts such as morphemes and syllables are subtley different across the world.}
 
+In order to develop the text-based tool, it is important to first understand what the compositions might look like and so an understanding of phonological structures is vital. In linguistics, it is common to represent language as a tree, with individual words as leaf nodes. 
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/parse_tree.png}
+    \caption{An example of a grammatical parse tree}
+    \label{fig:parse_tree}
+\end{figure}
+
+The tree structure is used as it accurately represents the structure of many written natural (as well as formal) languages, like English. A key feature of the tree structure is the idea of recursion; a node in a tree can contain nodes with the same structure as itself, continuing on indefinitely. Interestingly, in a seminal article from 2002, M. Hauser, N. Chomsky and W. Fitch argue that recursion is the singular feature of that distinguishes the human faculty of language from other animals \cite{Hauser02}. In these trees, words are the smallest possible units of language, but in alphabetic languages, words are made of morphemes, which in turn consist of one or more letters. This idea of breaking up sentences, phrases and words into smaller pieces is of particular interest for phonological composition, as seen in the preparation chapter.
+
+This analysis motivates the necessity for a recursive structure in the design of the tools. There needs to be a concept of elements containing smaller elements which could contain smaller elements still, until we get down to individual spoken sounds.
+
+In spoken language, this structure persists still, but words are represented through sound. These sounds can be characterised as individual syllables, or in writing by a phonetic notation, such as the International Phonetic Alphabet (IPA), which was of interest for this project.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/IPA.png}
+    \caption{A portion of the official IPA chart.\protect\footnotemark}
+    \label{fig:ipa_chart}
+\end{figure}
+\footnotetext{Image from International Phonetic Association, under the CC BY-SA 3.0 license: \url{https://creativecommons.org/licenses/by-sa/3.0/deed.en}, cropped by myself}
+
+An idea for the text tool was to represent sounds by characters from the International Phonetic Alphabet, as they cover almost all sounds used in human spoken language. Characters in the IPA represent vocal sounds or modifications to vocal sounds which have a lexical impact on what is being said. That is, if you were to replace one sound or modification with another, the meaning of the word being said may change. It was discovered during research that there is no problem using IPA characters in Sonic Pi, and they can be used in strings and even as function and variable names.
+
+The letters in IPA represent consonant or vowel sounds, which can then be modified by diacritics. For example, the character b represents the first sound in the English word ``bit", and we can attach a diacritic to have it read in ``breathy voiced" form: \textsubumlaut{b}.
+
+With this in mind, we have two elements for the design. The narrative structure of the composition, which relates to the linguistic tree structure, and the actual sounds and modifications to sounds being made.
+
+\subsection{Vowel synthesis}
+Whilst it was clear general speech synthesis was never going to work, there was some exploration into audio synthesis mimicking vowel sounds. By generating a sawtooth wave, applying a bandpass filter and some other effects, you can make decent vowel sounds. All of these features are present in Sonic Pi, so I decided to experiment with it.
+
+In the end, I scrapped this as it didn't sound good enough to incorporate into the project and to expend development time on, so for the rest of the project I focused solely on using samples in my tools.
+
+\subsection{Computational representation}
+In order to represent this structure, it is clear we want to organise sounds recursively, so we can define a word as a collection of syllables, or a line as a collection of words. There is a number of ways to achieve this computationally.
+
+A natural approach would be object oriented programming. Defining a type which could either contain a sound clip or a collection of objects with the same type supplies all the capability needed to represent the aforementioned phonological tree structure. Objects which simply contain a sound clip are leaf nodes in the tree and objects containing collections of other sound objects are the parent nodes. These nodes could have names denoting what structure they represent, such as a syllable, word or sentence.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/tree_structure_example.png}
+    \caption{Example of a possible structure with this approach}
+    \label{fig:tree_struct_ex}
+\end{figure}
+
+Unfortunately, Sonic Pi does not allow for classes to be created so this approach does not apply for the text tool. Instead of dedicating a class to each of these objects, we could instead use lists which either contain more lists or sound files, as previously described. This was the approach I ended up using for the text-based tool.
+
+It is still desirable to have parameters set on the sounds, though, even without being able to define a class which would have these parameters as its local fields. For this, we could store the sound files as a tuple, containing a file name referring to a sound file to be played, along with one or two parameters.
+
+\subsection{Final text-based tool}
+The final implementation of the text-based tool consists of a collection of functions which can:
+\begin{itemize}
+    \item Create lists of sounds.
+    \item Translate a string of IPA characters into a list of file names storing the sounds they represented.
+    \item Take a list containing sounds, or other lists, and play them back with the appropriate timing.
+    \item Reverse a list of sounds (in a deep sense, each list contained in the list would also be reversed).
+    \item Set all sounds in a list to last the same duration.
+\end{itemize}
+
+Sounds are represented by a tuple:
+\begin{equation*}
+    \{sample,\ length,\ gap\}
+\end{equation*}
+
+sample - Stores a string referring to a file name, to be played.
+
+length - The amount of time the sample should play for, relative to how long the sample is. The sample is stretched such that it is played for $sample_duration * length$ seconds.
+
+gap - The amount of time after the sound plays that the next sound should start, relative to the duration of the sample. After playing this sound, the program waits $sample\_duration * length * (1 + gap)$ seconds before playing the next sound. If this value is negative, the next sound will overlap with the current sound, which can make for more realistic speech when using individual consonant/vowel sounds.
 \section{tuPAC}
+
+This section describes the culmination of all previous work described in this dissertation, the graphical user interface to aide in phonological composition, the Totally Usable Phonological Audio Compser, or tuPAC for short.
+
 \subsection{Repository overview}
+We start with an overview of the file structure of the program. All code in this repository was written from scratch after the research and preparation phases of the project were complete and the framework for the software was decided.
 
+\DTsetlength{0.2em}{1em}{0.2em}{0.4pt}{2pt}
+\setlength{\DTbaselineskip}{20pt}
+\dirtree{%
+.1 .
+.1 dist/\DTcomment{The files to be run by Electron (Compiled JS files and HTML)}.
+.2 index.html\DTcomment{The webpage that renders in Electron}.
+.1 resource/\DTcomment{Resources other than code needed for the software}.
+.2 img/.
+.2 font/.
+.1 src/\DTcomment{The source TypeScript files to be compiled}.
+.2 capsule.ts.
+.2 canvas.ts.
+.2 ....
+.2 tupac.ts\DTcomment{The code run in index.html to render the GUI}.
+.1 test/\DTcomment{Unit tests to be run with Jest}.
+.1 main.js\DTcomment{The initial code run, which opens the Electron window}.
+.1 jest.config.js\DTcomment{Configuration for Jest testing}.
+.1 tsconfig.json\DTcomment{Configuration for TypeScript compilation}.
+}
 
+The repository consists mainly of two folders, \verb|src|, which contains the TypeScript files which compile into \verb|dist|, which contains the runnable files. \verb|dist| also contains the HMTL file which is displayed when Electron runs. The TypeScript files compile to CommonJS modules, which are imported and used by the other files. For example, file \verb|tupac.ts| imports the module "window", which after compilation is done by importing the \verb|window.js| file.
+\newpage
+\subsection{Visualising composition structure}
+When designing the graphical interface, it is necessary for there to be an accurate visual representation of phonological composition. There needs to be a clear representation of individual sounds, and the components containing the sounds. I looked at the design of other software for inspiration.
 
+\subsubsection{Scratch}
+
+\subsubsection{Field}
+A major source of inspiration for the programs final interface was Field, which is a live coding software made by OpenEndedGroup\footnote{Github repository of Field: \url{https://github.com/OpenEndedGroup/Field2}} not for music, but for visual art. The live coding background means that this design is very relevant to my own project. The interface consists of a canvas which can contain boxes, which can have code written to be associated with them. A line marking the current ``time" runs over the screen, executing code in boxes as the line runs over them. The code can use the current position of the line as a parameter, and the code is used to generate visuals. Field allows users to generate moving digital art.
+
+This design massively inspired the final design of the graphical interface, using a canvas with a line representing the passing of time, with boxes that ``execute" as they are run over. In tuPAC, the boxes represent audio to be played rather than code.
+
+\subsection{Canvas}
+\subsection{Time-keeping}
 \subsection{Waveforms}
-
 \subsection{Time Bar Translation}
-
+\subsection{Effects}
+%TC:ignore
 \chapter{Evaluation}
 
 
@@ -295,7 +435,7 @@ The project was successful. A novel system was designed and developed which prov
 
 \section{Further Work}
 The system that has been developed is somewhat lacking in features due to the limited scope of the project and difficulty of certain desired functionality. This project has provided the theoretical and practical basis for further exploration into the potential of audio composition interfaces and their ability to assist in the creation of music.
-%TC:ignore
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % the bibliography
 \addcontentsline{toc}{chapter}{Bibliography}
