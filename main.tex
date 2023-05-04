@@ -16,6 +16,11 @@
 \usepackage{qtree}
 \usepackage{tipa}
 \usepackage{dirtree}
+\usepackage{svg}
+\usepackage[format=hang,labelfont=bf]{caption}
+\usepackage{subcaption}
+\usepackage[algoruled,vlined]{algorithm2e}
+\usepackage{fancyref}
 
 %\raggedbottom                           % try to avoid widows and orphans
 \sloppy
@@ -35,7 +40,28 @@
 \newcommand{\low}{\colorbox{LimeGreen}{Low}}
 \newcommand{\easy}{\colorbox{LimeGreen}{Easy}}
 
+\newcommand{\element}{\texttt{Element}}
+\newcommand{\pos}{\texttt{Pos}}
+\newcommand{\boxT}{\texttt{Box}}
+\newcommand{\window}{\texttt{Window}}
+\newcommand{\canvas}{\texttt{Canvas}}
+\newcommand{\controlbar}{\texttt{ControlBar}}
+\newcommand{\timebar}{\texttt{TimeBar}}
+\newcommand{\button}{\texttt{Button}}
+\newcommand{\playable}{\texttt{Playable}}
+\newcommand{\sample}{\texttt{Sample}}
+\newcommand{\effect}{\texttt{Effect}}
 
+\newcommand*{\fancyrefalglabelprefix}{alg}
+
+\frefformat{main}{\fancyrefalglabelprefix}{\textbf{algorithm~#1}}
+\Frefformat{main}{\fancyrefalglabelprefix}{\textbf{Algorithm~#1}}
+
+\frefformat{main}{\fancyreffiglabelprefix}{\textbf{figure~#1}}
+\Frefformat{main}{\fancyreffiglabelprefix}{\textbf{Figure~#1}}
+
+\frefformat{main}{\fancyrefseclabelprefix}{\S~#1}
+\Frefformat{main}{\fancyrefseclabelprefix}{\S~#1}
 
 \begin{document}
 %TC:ignore
@@ -125,6 +151,7 @@ by
 
 \pagestyle{headings}
 
+%TC:endignore
 \chapter{Introduction}
 \textit{
 Since the development of electronic devices, people have utilised them extensively in the creation of art, especially music. From the theremin to synthesizers to trackers and modern day Digital Audio Workstations (hereafter referred to as DAWs), electronics have enabled people to compose music easier than ever before, and to achieve previously unachievable sounds.
@@ -187,14 +214,15 @@ In the project proposal, four success criteria were set out for this project. He
          Represent model & \high & \hard \\
          Ensure time keeping of audio & \high & \hard \\
          Apply effects to audio & \medium & \medium \\
+         Adjust playback speed for audio & \medium & \hard \\
          Neural synthesis integration & \low & \veryhard \\
          \hline
     \end{tabular}
-    \caption{Caption}
+    \caption{Table of possible tasks to be completed.}
     \label{tab:req_anal}
 \end{table}
 
-Whilst the above tasks are necessary for the project's success, the true success of the project will come from the clarity, usability and efficiency of the interface, for actual users. This success cannot be measured just by the functionality and design choices of the interface, but through user testing, as was carried out in the evaluation stage of the project.  The evaluation measures the projects success in terms of:
+Whilst some the above tasks are necessary for the project's success, the true success of the project will come from the clarity, usability and efficiency of the interface, for actual users. This success cannot be measured just by the functionality and design choices of the interface, but through user testing, as was carried out in the evaluation stage of the project.  The evaluation measures the projects success in terms of:
 \begin{itemize}
     \item Usability: The ability for the program to make the user's life easier by making common actions fast and intuitive.
     \item Clarity: There is a clear correspondence between what happens on the screen, and what the user imagines is happening to their composition. When the user makes a change, the program changes the audio appropriately, how the user expects.
@@ -202,7 +230,7 @@ Whilst the above tasks are necessary for the project's success, the true success
 \end{itemize}
 
 \section{Existing Tools}
-Studying existing designs of similar software provides reference for what people will generally expect from audio production software, as well as highlighting areas where traditional designs fail in facilitating unconventional styles of composition.
+Studying existing designs of similar software provides reference for what people will generally expect from audio production software, as well as highlighting areas where traditional designs fail in facilitating unconventional styles of composition. This is imperative for the design of this project to improve upon what exists already.
 
 \subsection{Digital Audio Workstations}
 In this dissertation, I will primarily focus on Ableton Live when discussing DAWs, as it is the one I personally have the most experience with and it is commonly used in electronic music production. It is also the DAW used for evaluation against my project.
@@ -216,7 +244,7 @@ In this dissertation, I will primarily focus on Ableton Live when discussing DAW
 
 Ableton Live's main interface consists of ``tracks" which can contain either sound clips or MIDI sequences which define the pitches and timing of notes to be digitally generated. The horizontal axis represents time, starting from the left and moving to the right, and the vertical axis generally represents different instruments (separate trakcs), and sometimes pitch. Effects can be added to and parameters adjusted on individual tracks or groups of tracks. 
 
-This structure and design, typical for DAWs, works with an intuition that lines up with traditional composition - each track corresponds to an instrument which can be fed through different effects. Visually, this approach resembles modern staff notation (see Figure \ref{fig:staff_not}), where the horizontal axis represents time, vertical axis represents pitch, and different instruments or parts are placed on separate staffs (collections of 5 horizontal lines).
+This structure and design, typical for DAWs, works with an intuition that lines up with traditional composition - each track corresponds to an instrument which can be fed through different effects. Visually, this approach resembles modern staff notation (see \Fref[main]{fig:staff_not}), where the horizontal axis represents time, vertical axis represents pitch, and different instruments or parts are placed on separate staffs (collections of 5 horizontal lines).
 
 \begin{figure}[h]
     \centering
@@ -243,7 +271,7 @@ Live coding software allows users to generate audio through writing programs, wi
 
 Live coding platforms differ from DAWs in that there is generally less complex functionality, with more focus on simpler but easier manipulation, particularly the repetition and augmentation of sounds previously defined. This makes the process of live coding plausible in real time whilst still sounding good. This approach is much closer to the goal of this project, and so was a primary focus of research and preparation.
 
-The design of live coding platforms is highly related to this project, as the code focuses on designing sounds and loops of sounds which are played back live, and augmented as they play. However, live coding platforms, being text-based, have no graphical interface, and so are inaccessible to artists who are less tech-savvy and also provide no visual notation for the music being composed.
+The design of live coding platforms is highly related to this project, as they focus on defining sounds and loops of sounds which are played back live, and augmented as they play. However, live coding platforms, being text-based, have no graphical interface and so are inaccessible to artists who are less tech-savvy and also provide no visual notation for the music being composed.
 
 \section{Sonic Pi and Strudel}
 In preparation for the development of the project, I researched two live coding platforms in order to build my text tool using the framework of one of them.
@@ -255,7 +283,7 @@ Strudel is a web-based live coding platform built in Javascript, based on anothe
 I decided to continue my research using the Sonic Pi platform, as Strudel is too incomplete in its current form to work with and could cause additional difficulties down the line.
 
 \section{Speech synthesis}
-Whilst preparing for the project, it was unclear exactly what the functionality of the tool would include. An obvious idea was to include a way of generating phonological sounds digitally, to allow the user to utilise and manipulate speech sounds without recording and re-recording themselves speaking. However, digital speech synthesis is an extremely difficult task and was largely ruled to be out of scope for this project. It is possible to generate very basic vowel sounds without too much difficulty, but producing parameters which are able to be manipulated in a way that makes sense intuitively is almost impossible. I experimented with vowel synthesis during the implementation of the text tool, but decided not to spend too much time on it and focused on sample-based composition for the rest of the implementation.
+Whilst preparing for the project, it was unclear exactly what the functionality of the tool would include. An obvious idea was to include a way of generating phonological sounds digitally, to allow the user to utilise and manipulate speech sounds without recording and re-recording themselves speaking. However, digital speech synthesis is an extremely difficult task and was largely ruled to be out of scope for this project. It is possible to generate very basic vowel sounds without too much difficulty, but producing parameters which are able to be manipulated in a way that makes sense intuitively is almost impossible. I experimented with vowel synthesis during the implementation of the text tool, as will be detailed later.
 
 \section{Software Engineering}
 In preparation for the implementation of this project, research was conducted to decide the specific tools and techniques that would be used. It was necessary to find what approach would allow for the project to be implemented fully, but not require excess development time. Some of that research, and the final decisions for implementation, is outlined here.
@@ -267,7 +295,7 @@ For the graphical interface, I needed a platform that was as powerful as possibl
 
 Qt is a C++ framework of libraries which facilitates the development of powerful desktop applications, with a powerful GUI library. It was used to build Ableton, Sibelius and MuseScore, which are three of the most popular musical composition tools on the market. However, this complexity would make it too cumbersome to work with for the scope of this project.
 
-Electron is a Javascript framework which builds desktop applications using Chromium, rendering a web-page in a native window. This makes it relatively easy to use and inherently cross-platform, although that isn't of much importance for this project. It uses Node.js for Javascript. Node.js is convenient and enables the use of essentially any Javascript library, through the npm package manager.
+Electron is a Javascript framework which builds desktop applications using Chromium, rendering a web-page in a native window. This makes it relatively easy to use and inherently cross-platform, although that isn't of much importance for this project. It uses Node.js for Javascript. Node.js is convenient and enables the use of essentially any Javascript library, through the npm package manager. Electron is a popular, well-documented framework, which is beneficial in a project with little development time. It powers applications like Discord, Skype, Twitch and Notion.
 
 After researching various options, I decided to work with Electron for its ease of use considering the limited development time of this project.
 
@@ -292,18 +320,24 @@ The first stage would consist of the development of the text-based tool and the 
 
 The second stage would consist of the development of the graphical tool, which suits the waterfall development methodology. At this stage, the graphical tool would be fully planned out and designed, and so the development could be broken down into the implementation of individual features, with essential prerequisites like playback of audio being fully implemented before features that need others to be implemented, like audio effects.
 
+\subsection{Tools}
+For the development of the text-based tool, I simply used Sonic Pi's GUI to write code.
+
+For the graphical tool, I used Visual Studio Code as an IDE. VS Code was an obvious choice, as it is powerful and very customisable. There exists many community made extensions which can enable one to use various tools easily with your code, such as better support for TypeScript. It has a built-in Git tool which made for easy version control and backing up.
+
+I used GitHub to backup my repository and Git for version control. As stated, this was easy to do with VS Code. This minimised the risk of data loss, as even if my laptop was lost or destroyed, I could retrieve my work. In the same vein, I wrote all of my notes during the project in Notion which automatically backs everything up to the cloud.
+
 \section{Starting Point}
 Here, I declare the previous knowledge and skills that I did and didn't have prior to the implementation of the project.
 
-In Part IB, I took the Formal Models of Language course, and it Part II, I took the Natural Language Processing unit of assessment. These courses provided me with insight into the structure of language which is discussed in the implementation and was relevant to the development of the project.
+In Part IB, I took the Formal Models of Language course, and in Part II, I took the Natural Language Processing unit of assessment. These courses provided me with insight into the structure of language which is discussed in the implementation and was relevant to the development of the project.
 
 \subsection{Text tool}
 The text tool was built in Sonic Pi's own language, which handles everything from audio generation to time keeping. As the text tool was only for demonstration to the user and exploration of possible useful features, this was sufficient. I have only briefly used Sonic Pi prior to this project and was required to learn its native language, which is based on the programming language Ruby, which I have also never used before.
 
 \subsection{Graphical tool}
-The graphical tool for the project was built using Electron and Node.js, and written in Typescript. The sound was generated using the Tone.js library, which has a reliable time-keeping system. I have never used Javascript, Typescript, Electron, Node.js or Tone.js in any previous work. The graphical interface was rendered using p5.js which is able to render text, shapes and lines onto a HTML canvas. I have previously used the Python version of p5.js, Processing, which is very similar to the Javascript library.
+The graphical tool for the project was built using Electron and Node.js, and written in Typescript. The sound was generated using the Tone.js library, which has a reliable time-keeping system. I have never used Javascript, Typescript, Electron, Node.js or Tone.js in any previous work. I have previously used the Python version of p5.js, Processing, which is very similar to the Javascript library.
 
-%TC:endignore
 \chapter{Implementation}
 This chapter outlines how both the text-based tool and the final graphical tool were designed and implemented.
 
@@ -340,16 +374,19 @@ The letters in IPA represent consonant or vowel sounds, which can then be modifi
 With this in mind, we have two elements for the design. The narrative structure of the composition, which relates to the linguistic tree structure, and the actual sounds and modifications to sounds being made.
 
 \subsection{Vowel synthesis}
+FIX THIS SECTION - MORE TECHNICAL DESCRIPTIONS ALL OVER
+
+
 Whilst it was clear general speech synthesis was never going to work, there was some exploration into audio synthesis mimicking vowel sounds. By generating a sawtooth wave, applying a bandpass filter and some other effects, you can make decent vowel sounds. All of these features are present in Sonic Pi, so I decided to experiment with it.
 
 In the end, I scrapped this as it didn't sound good enough to incorporate into the project and to expend development time on, so for the rest of the project I focused solely on using samples in my tools.
 
-\subsection{Computational representation}
+\subsection{Computational representation}\label{sec:comp_rep}
 In order to represent this structure, it is clear we want to organise sounds recursively, so we can define a word as a collection of syllables, or a line as a collection of words. There is a number of ways to achieve this computationally.
 
 A natural approach would be object oriented programming. Defining a type which could either contain a sound clip or a collection of objects with the same type supplies all the capability needed to represent the aforementioned phonological tree structure. Objects which simply contain a sound clip are leaf nodes in the tree and objects containing collections of other sound objects are the parent nodes. These nodes could have names denoting what structure they represent, such as a syllable, word or sentence.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{images/tree_structure_example.png}
     \caption{Example of a possible structure with this approach}
@@ -380,12 +417,230 @@ sample - Stores a string referring to a file name, to be played.
 length - The amount of time the sample should play for, relative to how long the sample is. The sample is stretched such that it is played for $sample_duration * length$ seconds.
 
 gap - The amount of time after the sound plays that the next sound should start, relative to the duration of the sample. After playing this sound, the program waits $sample\_duration * length * (1 + gap)$ seconds before playing the next sound. If this value is negative, the next sound will overlap with the current sound, which can make for more realistic speech when using individual consonant/vowel sounds.
+\newpage
 \section{tuPAC}
 
-This section describes the culmination of all previous work described in this dissertation, the graphical user interface to aide in phonological composition, the Totally Usable Phonological Audio Compser, or tuPAC for short.
+This section describes the culmination of all previous work described in this dissertation, the design and implementation of the Totally Usable Phonological Audio Composer, or tuPAC for short.
+
+\subsection{Visualising compositional structure}
+When designing the graphical interface, it is vital to have an accurate visual representation of phonological composition, in order for the user to easily create and manipulate them whilst using it. There needs to be a clear representation of individual sounds, and the components containing those sounds. I looked at the design of other software for inspiration.
+
+\subsubsection{Scratch}
+Scratch is a very popular visual programming language that is commonly used to introduce children to the ideas behind programming without the difficulty of writing code in a text form, which can be intimidating at first. This platform was in my mind from the beginning of the project because of the similarity in motivation with my program, making a visual interface to improve accessibility to a task which is typically complex and technically done digitally. 
+
+Scratch uses blocks to represent events in either the project or the control flow of the events. These blocks are dragged over from a menu and put arranged how the user desires on a blank surface.
+
+\subsubsection{Field}
+A major source of inspiration for the program's final interface was Field, which is a live coding software made by OpenEndedGroup\footnote{Github repository of Field: \url{https://github.com/OpenEndedGroup/Field2}} not for music, but for visual art. The live coding background means that this design is very relevant to my own project. The interface consists of a canvas which can contain boxes, which can have code written to be associated with them. A line marking the current ``time" runs over the screen, executing code in boxes as the line runs over them. The code can use the current position of the line as a parameter, and the code is used to generate visuals. Field allows users to generate moving digital art.
+
+WRITE MORE HERE
+
+\newpage
+\subsection{Final Design}
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{images/tuPAC_GUI.png}
+    \caption{The GUI of tuPAC}
+    \label{fig:tupac_gui}
+\end{figure}
+RE-WRITE/SCRAP?
+
+The final design incorporates ideas from Field and Scratch and creates a visual representation of the phonological composition structure. The interface consists of a main canvas, an element menu, and a file menu. The canvas is much like the canvas in Field, with a line moving from left to right, activating boxes representing sounds as it passes over them. In order to represent the recursive type of the canvas, we have the boxes in the canvas to be either a sample linked to a sound file, or another canvas, with all of the capabilities of the main canvas.
+
+This design was the final step before the implementation of the graphical tool. Next, we will look at how the tool works.
+
+\subsection{Program structure}
+Figure \Fref[main]{fig:tupac_structure} gives an overview of the general structure of the software at runtime. The \verb|main.js| file is run first, which imports Electron, which contains Node.js and Chromium. It creates a window with the layout described by \verb|index.html|. On loading the webpage, \verb|tupac.js| is run, creating a p5.js canvas on the page. The p5.js library runs the setup function once and then repeatedly runs the draw function. These functions are defined in \verb|tupac.js|.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{images/tuPAC_structure.png}
+    \caption{High-level runtime structure. Arrows indicate some form of communication between parts.}
+    \label{fig:tupac_structure}
+\end{figure}
+
+As mentioned previously, TypeScript was used in order to support the usage of the object oriented programming paradigm, which reflects the design of this program. We want the ability to instantiate objects of a certain type, and pass objects around knowing they will have certain methods, which isn't possible in vanilla JavaScript as it is dynamically typed. In the \verb|/src/| directory, each file contains one or two classes, which are imported by other files to be used in the running of the program.
+
+When the setup function in \verb|tupac.js| is run, it instantiates a \window\ object, and populates it with the two side menus and a main canvas, as shown in Figure \Fref[main]{fig:tupac_gui}. The rest of the program then relies on user input.
+
+\subsection{Elements}
+In tuPAC, everything that is rendered on the screen is an \element, i.e. every class that will be rendered extends the abstract \element\ class. The \element\ class defines the members and methods that everything in the program needs to have, and provides default versions for them.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|c|p{300pt}}
+        Name & Type & Description \\
+        \hline
+        pos & \pos & The co-ordinates of the top-left corner of the \element\\
+        size & \pos & The size of the \element\\
+        minSize & \pos & The minimum size to allow when resizing\\
+        draggable & \verb|boolean| & Whether this \element\ can be moved by the user\\ 
+        resizable & \verb|Resi| & Whether this \element\ can be resized, in each direction\\
+        parent? & \element & The \element\ which contains this one. If this \element\ is on the top level, then this is \verb|null|\\
+    \end{tabular}
+    \caption{The members defined in the abstract \element\ class}
+    \label{tab:element_members}
+\end{table}
+
+In Table \Fref[main]{tab:element_members}, \verb|Resi| refers to an Enum\footnote{\url{https://www.typescriptlang.org/docs/handbook/enums.html}} which can be set to any of the values in the set \{None, X, Y, XY\}, indicating whether the \element\ can be resized by the user in the X and Y directions. The \pos\ class is described in section \S\Fref[main]{sec:pos}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.6]{images/element_demonstration.png}
+    \caption{The meaning of the size and pos members of \element. If an \element\ has no parent, this refers to the application's window.}
+    \label{fig:element_demo}
+\end{figure}
+
+The \element\ class supplies a number of methods which are useful for all \element s to have, or can be overridden by sub-classes. Two methods are left abstract, meaning that sub-classes need to have an implementation in their definitions. These methods are \verb|draw| and \verb|clicked| and, as one might guess, are called when the \element\ should be drawn onto the screen and when a user clicks on it, respectively.
+
+Note that the p5.js library uses the top-left corner as the origin of co-ordinates, meaning that the x co-ordinate indicates the distance from the left-hand side of the window, and the y co-ordinate indicates the distance from the top of the window. In tuPAC, this convention is maintained.
+
+\subsection{Instrumental Classes}
+\subsubsection{Pos \& Box}\label{sec:pos}
+Being a graphical software, tuPAC makes frequent use of co-ordinates and pairs of co-ordinates. The classes \pos\ and \boxT\ help with the handling of these by wrapping these up into single objects and providing methods to easily manipulate them.
+
+\pos\ objects have two members: x and y. The class provides methods such as adding co-ordinates together, multiplication by a scalar and finding the piecewise minimum of two \pos\ objects.
+
+\boxT\ objects have two members: origin and size. These members are both \pos\ objects specifying the position of the top-left corner and size of a box, respectively. This class supplies methods to check whether a co-ordinate is in a \boxT\ and move a \boxT's origin such that it sits inside a larger \boxT, et cetera.
+
+\subsubsection{Control Bar}
+Many of the \element s in tuPAC have bars along the top which can be used to drag them, can have buttons which control the \element, and can have text to describe them. These are referred to as \controlbar s, the name of the class which defines these objects.
+
+\subsubsection{Playable}
+\playable\ is an interface that specifies \element s that can be played. It ensures that all \playable\ \element s have methods for playing, pausing, stopping and scheduling playback.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.6]{images/tupac_class_structure.png}
+    \caption{The inheritance structure of all classes that extend \element. All smaller boxes contained in larger boxes are sub-classes of the larger box.}
+    \label{fig:element_inheritance}
+\end{figure}
+
+\subsection{Canvas}
+The most important \element\ in tuPAC is probably the \canvas. When the program first starts, the user is presented with a blank \canvas\ object, alongside the menus. This class represents the nodes of the phonological tree structure as described in \S\Fref[main]{sec:comp_rep}. They represent a sound or a collection of sounds; when a \canvas\ plays, its \timebar\ moves from left to right, and any sounds underneath the bar get played.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics{images/canvas.png}
+    \caption{An example of a \canvas.}
+    \label{fig:canvas}
+\end{figure}
+
+\canvas\ objects consist of:
+\begin{itemize}
+    \item A \controlbar\ with a title, play/pause button and stop button. The play/pause button starts the \canvas\ playback if it is paused, and pauses the \timebar\ where it is if not. The stop button stops the playback and moves the \timebar\ back to the start of the canvas. The title can be clicked on and written into, to name the \canvas\ however the user likes.
+    \item A blank space which can hold any other \playable s to be played when the \canvas\ plays.
+    \item A \timebar\ which scrolls from left to right across the \canvas, playing any \element s inside the \canvas.
+    \item A box which translates the \timebar\ inside the \canvas\ to the \canvas' parent. This does not exist on the main \canvas, as it has no parent. This is explained in \S\Fref[main]{sec:timebar_translate}.
+\end{itemize}
+
+\subsection{Samples}
+The \sample\ class is where all audio in tuPAC originates. These \element s represent an audio file to be played as a \timebar\ scrolls over them.
+
+\subsubsection{Waveforms}
+\sample s are drawn as a ``waveform overview", meaning that they are visually represented by an approximate chart of the amplitude of the sound wave over time. For audio clips, this is perceived as the volume of the sound over time. This representation helps to distinguish one clip from another, as well as allowing users to see if there are periods of silence in the audio before playing it.
+
+The amplitude of a wave has various definitions. Here, we are considering the volume of an audio clip over time, so we approximate by using the maximum magnitude within some range as the amplitude of the clip in that range. As audio files are discrete rather than continuous, this can simply be defined as the greatest absolute value in a given range, as shown in \Fref[main]{fig:amplitude}. When discussing audio files, I will refer to the individual magnitude values as samples, as is standard in audio processing. This is not to be confused with the \sample\ class.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/amplitude_example.png}
+    \caption{This diagram illustrates how we get the amplitude of an audio clip within a given range. Here the range is [1,7] and the sample with the highest absolute magnitude is the 3rd.}
+    \label{fig:amplitude}
+\end{figure}
+
+In order to generate a waveform overview, the audio needs to be split into a set of ranges and the amplitude of each range found. In tuPAC, this is done with \Fref[main]{alg:waveform}. For a given bounding box, this algorithm generates an array of bar heights corresponding to a given audio file. This waveform can then be drawn as a collection of vertical lines in the \sample's \verb|draw| function.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=1.5]{images/sample.png}
+    \caption{Example of a waveform drawn on a \sample.}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\SetKwInput{Input}{Input}\SetKwInOut{Data}{Constants}
+\Input{\textit{WaveformLength}: In pixels, the horizontal length of the waveform.
+\newline
+\textit{WaveformHeight}: In pixels, the maximum vertical height of bars in the waveform.
+\newline
+\textit{ArrayOfSamples}: The buffer from Tone.js, arbitrarily large.}
+\Data{\textit{BarThickness}: In pixels, the thickness of each bar when drawn.
+\newline
+\textit{BarPad}: In pixels, the distance between bars when drawn.
+\newline
+\textit{MaxWidth}: In samples, the maximum size of the range to get amplitude from.}
+\vspace{1mm} \hrule \vspace{1mm}
+\nl $NumberOfBars \gets WaveformLength/(BarThickness + BarPad)$\;
+\nl $Waveform \gets []$\;
+\nl $Ratio \gets ArrayOfSamples.length / NumberOfBars$\;
+\nl $Width \gets \lfloor min(MaxWidth, ratio)/2\rfloor$\;
+\nl \For{$i=0$ to $bars-1$}{
+    \nl $Centre \gets i * Ratio$\;
+    \nl $Range \gets [Centre-Width, Centre+Width]$\;
+    \nl $Waveform[i] \gets max_{j\in Range}(|j|)$\;
+}
+\nl $MaxValue \gets max_{n\in Waveform}(n)$\;
+\nl \For{$i=0$ to $bars-1$}{
+    \nl $Waveform[i] \gets WaveformHeight * Waveform[i] / Max$\;
+}
+\caption{tuPAC waveform generation algorithm}\label{alg:waveform}
+\end{algorithm}
+
+ADD COMMENTS TO ALGORITHM
+
+In tuPAC, the audio generation is done with Tone.js. After loading a sound file to be played in a \sample\ we can acquire an array for floating point numbers between -1 and 1 representing the magnitude of each sample in the audio file. We can then run \Fref[main]{alg:waveform} on this array to get an array of bar heights.
+
+When we generate the waveform, we are generating an array of arbitrary size from an array of arbitrary size. Thus, we must ensure that no matter what size each array is we will get a waveform that approximately represents the audio.
+
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{image1}
+  \caption{A subfigure}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{image1}
+  \caption{A subfigure}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{}
+    \caption{Caption}
+    \label{fig:my_label}
+\end{figure}
+
+\subsection{Time Bar Translation}\label{sec:timebar_translate}
+A feature that was wanted for tuPAC was to allow \canvas es to run at different speeds. However, this results in \timebar s moving at different speeds, which could be visually confusing and difficult to understand for the user. To solve this, there is a space in which the \timebar\ of a child \canvas\ has a line connecting it to the parent \canvas's \timebar, as shown in \Fref[main]{fig:timebartranslation}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics{images/timebartranslate.png}
+    \caption{Example of a \timebar\ being ``translated".}
+    \label{fig:timebartranslation}
+\end{figure}
+
+This feature is essential to helping users see how \canvas es work (maybe cite evaluation here) but it also serves a functional purpose. Naturally, as this box translates between the speeds of the two \canvas es, it's horizontal size represents the duration of the child \canvas, at the parent \canvas' speed. When resized, the child \canvas' speed changes to represent the box's size. This means that the \canvas' playback last exactly during the time the parent \timebar\ is over this translation box.
+
+\subsection{Effects}
+The \effect\ class provides a way of applying distortion or reverb to the sounds in tuPAC. As shown in \Fref[main]{fig:element_inheritance}, it extends the same class as \canvas, allowing for other \playable s to be held by an \effect. \effect s, however, can only hold one \element\ and it cannot be moved around. In order to do this, a \canvas could instead be put into an \effect\ instead.
+
+
+\subsection{Rendering}
+\subsection{Playback}
+In tuPAC, all \element s have a horizontal size which directly correlates to their length in time when playing back. With \canvas es this can be manipulated as described in \Fref[main]{sec:timebar_translate}, but it is imperative that this length always correlates to the duration of playback. As mentioned previously all playback is done with Tone.js. 
 
 \subsection{Repository overview}
-We start with an overview of the file structure of the program. All code in this repository was written from scratch after the research and preparation phases of the project were complete and the framework for the software was decided.
+In summary, I present an overview of the file structure of the project. All code in the \verb|src| directory was written from scratch after the research and preparation phases of the project were complete and the framework for the software was decided. The other code (the contents of \verb|main.js|, \verb|index.html|, \verb|jest.config.js| and \verb|tsconfig.json|) was written with the help of online guides, as they are more generic files pertaining to Electron, Jest and TypeScript. All images used in the program are in \verb|resource/img/| and were created by me from scratch. The font stored in \verb|resource/font/| was taken from Google Fonts, under the Open Font License.
 
 \DTsetlength{0.2em}{1em}{0.2em}{0.4pt}{2pt}
 \setlength{\DTbaselineskip}{20pt}
@@ -407,26 +662,18 @@ We start with an overview of the file structure of the program. All code in this
 .1 tsconfig.json\DTcomment{Configuration for TypeScript compilation}.
 }
 
-The repository consists mainly of two folders, \verb|src|, which contains the TypeScript files which compile into \verb|dist|, which contains the runnable files. \verb|dist| also contains the HMTL file which is displayed when Electron runs. The TypeScript files compile to CommonJS modules, which are imported and used by the other files. For example, file \verb|tupac.ts| imports the module "window", which after compilation is done by importing the \verb|window.js| file.
-\newpage
-\subsection{Visualising composition structure}
-When designing the graphical interface, it is necessary for there to be an accurate visual representation of phonological composition. There needs to be a clear representation of individual sounds, and the components containing the sounds. I looked at the design of other software for inspiration.
+The repository consists mainly of two folders. \verb|src| contains the TypeScript files which compile into \verb|dist|, which contains the files used at runtime. \verb|dist| also contains the HMTL file which is displayed when Electron runs. The TypeScript files compile to CommonJS modules, which are imported and used by the other files. For example, the file \verb|tupac.ts| imports the module ``window", which after compilation is done by importing the \verb|window.js| file.
 
-\subsubsection{Scratch}
-
-\subsubsection{Field}
-A major source of inspiration for the programs final interface was Field, which is a live coding software made by OpenEndedGroup\footnote{Github repository of Field: \url{https://github.com/OpenEndedGroup/Field2}} not for music, but for visual art. The live coding background means that this design is very relevant to my own project. The interface consists of a canvas which can contain boxes, which can have code written to be associated with them. A line marking the current ``time" runs over the screen, executing code in boxes as the line runs over them. The code can use the current position of the line as a parameter, and the code is used to generate visuals. Field allows users to generate moving digital art.
-
-This design massively inspired the final design of the graphical interface, using a canvas with a line representing the passing of time, with boxes that ``execute" as they are run over. In tuPAC, the boxes represent audio to be played rather than code.
-
-\subsection{Canvas}
-\subsection{Time-keeping}
-\subsection{Waveforms}
-\subsection{Time Bar Translation}
-\subsection{Effects}
-%TC:ignore
 \chapter{Evaluation}
+As mentioned in the preparation chapter, the success of this project leans on the successful implementation of a set of features, and the extent to which it enables artists to easily create phonological compositions. The latter is infeasible to directly evaluate, as it would be extremely difficult to find a large sample of people interested in this style of composition who would be willing to participate in a study. Instead, I chose to do general user testing on the usability and clarity of the program, which indicates the efficacy of the design and implementation of the project.
 
+\section{Functionality}
+
+\subsection{Unit Testing}
+
+\section{User Testing}
+
+\subsection{}
 
 
 \chapter{Conclusions}
@@ -436,6 +683,7 @@ The project was successful. A novel system was designed and developed which prov
 \section{Further Work}
 The system that has been developed is somewhat lacking in features due to the limited scope of the project and difficulty of certain desired functionality. This project has provided the theoretical and practical basis for further exploration into the potential of audio composition interfaces and their ability to assist in the creation of music.
 
+%TC:ignore
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % the bibliography
 \addcontentsline{toc}{chapter}{Bibliography}
